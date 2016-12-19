@@ -41,21 +41,18 @@ Meteor.methods({
 
         const task = Tasks.findOne(taskId);
 
-        if(Meteor.userID() != "admin") {
 
-            if (task.private && task.owner !== Meteor.userId()) {
-                // If the task is private, make sure only the owner can delete it
-                throw new Meteor.Error('not-authorized');
-            }
-
-            if(task.owner !== Meteor.userId()) {
-                throw new Meteor.Error('not-authorized');
-            }
-
-            Tasks.remove(taskId);
-        } else {
-            Tasks.remove(taskId);
+        if (task.private && task.owner !== Meteor.userId()) {
+            // If the task is private, make sure only the owner can delete it
+            throw new Meteor.Error('not-authorized');
         }
+
+        if (task.owner !== Meteor.userId() && Meteor.user().username !== "admin") {
+            throw new Meteor.Error('not-authorized');
+        }
+
+        Tasks.remove(taskId);
+
 
     },
     'tasks.setChecked' (taskId, setChecked) {
