@@ -60,10 +60,17 @@ Meteor.methods({
         check(setChecked, Boolean);
 
         const task = Tasks.findOne(taskId);
-        if (task.private && task.owner !== Meteor.userId()) {
-            // If the task is private, make sure only the owner can check it off
-            throw new Meteor.Error('not-authorized');
+
+        if(Meteor.userId() === null) {
+            throw new Meteor.Error('Must be logged in to accept a job.')
         }
+        if(task.owner === Meteor.userId()) {
+            throw new Meteor.Error('Cannot accept your own offer!')
+        }
+        // if (task.private && task.owner !== Meteor.userId()) {
+        //     // If the task is private, make sure only the owner can check it off
+        //     throw new Meteor.Error('not-authorized');
+        // }
 
         Tasks.update(taskId, {
             $set: {
