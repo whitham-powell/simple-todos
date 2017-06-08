@@ -50,7 +50,6 @@ class TodosListCtrl {
         // Insert a task into the collection
         Meteor.call('tasks.insert', newTask);
 
-
         // Clear form
         this.newTask = '';
     }
