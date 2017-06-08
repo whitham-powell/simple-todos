@@ -13,6 +13,7 @@ class TodosListCtrl {
 
         this.hideCompleted = false;
 
+
         this.helpers({
             tasks() {
 
@@ -56,7 +57,7 @@ class TodosListCtrl {
 
     setChecked(task) {
         // Set the checked property to the opposite of its current value
-       Meteor.call('tasks.setChecked', task._id, !task.checked);
+        Meteor.call('tasks.setChecked', task._id, !task.checked, !task.statusOpen);
     }
 
     removeTask(task) {

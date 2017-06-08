@@ -4,6 +4,33 @@ import {check} from 'meteor/check';
 
 export const Tasks = new Mongo.Collection('tasks');
 
+// TasksSchema = new SimpleSchema({
+//     name: {
+//         type: String,
+//         label: "Name"
+//     },
+//     desc: {
+//         type: String,
+//         label: "Description"
+//     },
+//     author: {
+//         type: String,
+//         label: "Author",
+//         autoValue: function() {
+//             return this.userId
+//         }
+//     },
+//     createdAt: {
+//         type: Date,
+//         label: "Created At",
+//         autoValue: function() {
+//             return new Date()
+//         }
+//     }
+// });
+//
+// Tasks.attachSchema(TasksSchema);
+
 if (Meteor.isServer) {
     // This code only runs on the server
     // Only publish tasks that are public or belong to the current user
@@ -34,6 +61,10 @@ Meteor.methods({
             createdAt: new Date(),
             owner: Meteor.userId(),
             username: Meteor.user().username,
+            // status: "Open",
+            statusOpen: true,
+            acceptedAt: "None",
+            acceptedBy: "None"
         });
     },
     'tasks.remove' (taskId) {
@@ -55,16 +86,18 @@ Meteor.methods({
 
 
     },
-    'tasks.setChecked' (taskId, setChecked) {
+    'tasks.setChecked' (taskId, setChecked, setStatusOpen, setAcceptedBy) {
         check(taskId, String);
         check(setChecked, Boolean);
+        check(setStatusOpen, Boolean);
+        // check(setAcceptedBy, String);
 
         const task = Tasks.findOne(taskId);
 
-        if(Meteor.userId() === null) {
+        if (Meteor.userId() === null) {
             throw new Meteor.Error('Must be logged in to accept a job.')
         }
-        if(task.owner === Meteor.userId()) {
+        if (task.owner === Meteor.userId()) {
             throw new Meteor.Error('Cannot accept your own offer!')
         }
         // if (task.private && task.owner !== Meteor.userId()) {
@@ -72,12 +105,22 @@ Meteor.methods({
         //     throw new Meteor.Error('not-authorized');
         // }
 
+        if (setStatusOpen) {
+            acceptedToggle = null
+        }
+        else acceptedToggle = new Date();
+
         Tasks.update(taskId, {
             $set: {
-                checked: setChecked
+                checked: setChecked,
+                // status: "Accepted",
+                statusOpen: setStatusOpen,
+                acceptedAt: acceptedToggle,
+                acceptedBy: Meteor.user().username
             }
         });
     },
+
     'tasks.setPrivate' (taskId, setToPrivate) {
         check(taskId, String);
         check(setToPrivate, Boolean);

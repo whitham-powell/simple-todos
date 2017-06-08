@@ -9,25 +9,39 @@
     <login-buttons></login-buttons>
 
     <form class="new-task" ng-submit="$ctrl.addTask($ctrl.newTask)" ng-show="$ctrl.currentUser">
-        <input ng-model="$ctrl.newTask" type="text" name="text" placeholder="Type HERE to add a new offer..."/>
+        <input ng-model="$ctrl.newTask" type="text" name="text" placeholder="Type HERE to create a new offer"/>
     </form>
 
+    <!--<div class="new-task-container">-->
+    <!--{{> quickForm collection="Tasks" id="insertTaskForm" type="insert" class="new-task-form"}}-->
+    <!--</div>-->
 </header>
 
 <ul>
-     <li ng-repeat="task in $ctrl.tasks" ng-class="{'checked': task.checked, 'private': task.private}">
+    <li ng-repeat="task in $ctrl.tasks"
+        ng-class="{'checked': task.checked, 'private': task.private, 'status': task.status}">
 
         <button class="delete" ng-click="$ctrl.removeTask(task)">&times;</button>
 
-        <input type="checkbox" ng-checked="task.checked" ng-click="$ctrl.setChecked(task)" class="toggle-checked"/>
+        <!--<input type="checkbox" ng-checked="task.checked" ng-click="$ctrl.setChecked(task)" class="toggle-checked"/>-->
+
+        <button ng-checked="task.checked" ng-click="$ctrl.setChecked(task)" class="toggle-checked">
+            {{task.statusOpen == true ? "Open" : "Accepted" }}
+        </button>
 
         <span class="text">
             <strong>{{task.username}}</strong> - {{task.text}}
         </span>
+        <br>
+        <span class="text"> {{"Created : " + task.createdAt}}</span>
+        <br>
+        <span class="text">
+            Status - {{task.statusOpen == true ? "Open" : "Accepted at - " + task.acceptedAt + " by " + task.acceptedBy}}
+        </span>
 
-        <button class="toggle-private" ng-click="$ctrl.setPrivate(task)" ng-show="task.owner === $ctrl.currentUser._id">
-            {{task.private == true ? "Private" : "Public"}}
-        </button>
+        <!--<button class="toggle-private" ng-click="$ctrl.setPrivate(task)" ng-show="task.owner === $ctrl.currentUser._id">-->
+        <!--{{task.private == true ? "Private" : "Public"}}-->
+        <!--</button>-->
     </li>
 </ul>
 
