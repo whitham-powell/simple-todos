@@ -112,3 +112,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+#Ignore Vim swap files
+
+*.swp
