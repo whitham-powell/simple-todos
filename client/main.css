@@ -94,7 +94,7 @@ li.checked {
 }
 
 li.checked .text {
-    text-decoration: line-through;
+    text-decoration: underline;
     color: red;
 }
 
